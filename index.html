@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Example</title>
+	<link href="styles/style.css" rel="stylesheet" type="text/css">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	
+	<div class="form-group">
+		<input type="text">
+		<span class="form-control-calendar"></span>
+  </div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/datepicker.js"></script>
+
+	<script type="text/javascript">
+		$(window).load(function()
+		{
+			$('.form-group input').datepicker();
+		});
+	</script>
+</body>
+</html>
