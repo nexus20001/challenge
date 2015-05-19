@@ -154,12 +154,6 @@
 				$(window).resize(onResize);
 				onResize();
 
-				var cellCSS =
-				{
-					width: '25px',
-					height: '25px'
-				};
-
 				var setFirstDate = function(_date) {
 					if(_date) {
 						options.firstDate = _date;
@@ -208,13 +202,10 @@
 
 				var prevCell = $('<div/>')
 								.addClass(monyearClass)
-								.css(
-									$.extend({}, cellCSS,
-									{
-										width: '30px',
-										height: '34px'
-									})
-								)
+								.css({
+										'width': '30px',
+										'height': '34px'
+								})
 								.append(
 									$('<a/>')
 										.addClass('prev-arrow' + (showPrev ? '' : '-off'))
@@ -229,26 +220,20 @@
 
 				var titleCell = $('<div/>')
 								.addClass(monyearClass + 'title')
-								.css(
-									$.extend({}, cellCSS,
-									{
+								.css({
 										height: '34px',
 										width: '160px'
-									})
-								)
+								})
 								.click(function(e) {
 										toggleMonthSelect(firstDateYear);
 								});
 
 				var nextCell = $('<div/>')
 								.addClass(monyearClass)
-								.css(
-									$.extend({}, cellCSS,
-									{
+								.css({
 										width: '30px',
 										height: '34px'
-									})
-								)
+								})
 								.append(
 									$('<a/>')
 										.addClass('next-arrow' + (showNext ? '' : '-off'))
@@ -315,15 +300,11 @@
 						cell
 							.data('data', { date: cellDate})
 							.addClass(coreClass + cellClass)
-							.css(cellCSS)
-							.css(	
-									$.extend({}, cellCSS,
-									{
-										height: '23px',
-										width: '23px',
-										lineHeight: '23px'
-									})
-									);
+							.css({
+										'height': '23px',
+										'width': '23px',
+										'line-height': '23px'
+									});
 
 						cellsContainer.append(cell);
 					}
@@ -431,10 +412,8 @@
 								toggleYearSelect(parseInt(year)-8-8);
 							});
 
-					var titleText = $('<span/>')
-						.html(minYear+'-'+maxYear);
 
-					$(titleCell).empty().html(minYear+'-'+maxYear);
+					$(titleCell).empty().html(minYear+' - '+maxYear);
 					
 				};
 
@@ -442,13 +421,6 @@
 					options.firstDate = new Date(year, month, 1);
 					self.render();
 				};
-
-				var titleText = $('<span/>')
-									.html(monthNames[firstDateMonth]+' '+firstDateYear)
-									.mousedown(function() { return false; })
-									.click(function(e) {
-										toggleMonthSelect(firstDateYear);
-									});
 
 				var yearText = $('<span/>')
 									.html(monthNames[firstDateMonth]+' '+firstDateYear);
