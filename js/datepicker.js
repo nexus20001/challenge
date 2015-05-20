@@ -40,20 +40,16 @@
 
 			el
 				.bind('click', function(e) { self.show(e); })
-				.bind('focus', function(e) { self.show(e); });
+				.bind('focus', function(e) { self.show(e); })
+				.bind('keydown', function(e) { 
+					self.keydown(e);
+				});
 
 			var elSpan = el.parent().find('.form-control-calendar');
 
 			elSpan
 				.bind('click', function(e) {
-					var calendar = self.calendar;
-					if (calendar.is(':visible')) {
-						self.hide(); 
-						self.render();
-					}
-					else {
-						self.show(e); 
-					}
+					self.toggle();
 				});
 
 			if(self.calendar.length) {
@@ -74,6 +70,69 @@
 
 		datepicker.prototype =
 		{
+			keydown: function(e) {
+				if (this.options.calendarType == 1) {
+					switch (e.which){
+					case 27: // escape
+						this.toggle();
+						break;
+					case 37: // left
+						if (e.ctrlKey){
+							this.moveSelectedYear(-1);
+						}
+						else if (e.shiftKey){
+							this.moveSelectedMonth(-1);
+						}
+						else {
+							this.moveSelectedDay(-1);
+						}
+						break;
+					case 39: // right
+						if (e.ctrlKey){
+							this.moveSelectedYear(1);
+						}
+						else if (e.shiftKey){
+							this.moveSelectedMonth(1);
+						}
+						else {
+							this.moveSelectedDay(1);
+						}
+						break;
+					case 38: // up
+						if (e.ctrlKey){
+							this.moveSelectedYear(-1);
+						}
+						else if (e.shiftKey){
+							this.moveSelectedMonth(-1);
+						}
+						else {
+							this.moveSelectedDay(-7);
+						}
+						break;
+					case 40: // down
+						if (e.ctrlKey){
+							this.moveSelectedYear(1);
+						}
+						else if (e.shiftKey){
+							this.moveSelectedMonth(1);
+						}
+						else {
+							this.moveSelectedDay(7);
+						}
+						break;
+					case 13: // enter
+						this.calendar.find('.selected').click();
+						break;
+					}
+				};
+
+				this.fillDate(this.options.selectedDate);
+
+				if (this.calendar.is(':hidden')) { 
+					this.calendar.find('.selected').click() 
+				};
+			},
+
 			show: function() {
 				$.each($('.datepicker').not(this.el), function(i, o) {
 					if(o.length) { o.options.onHide(o.calendar) ; }
@@ -83,9 +142,54 @@
 			},
 
 			hide: function() {
-				if(this.options) {
-					this.options.onHide(this.calendar);
-				}
+				this.options.onHide(this.calendar);
+			},
+
+			toggle: function() {
+					if (this.calendar.is(':visible')) {
+						this.hide(); 
+						this.render();
+					}
+					else {
+						this.show(); 
+					}
+			},
+
+			fillDate: function(date) {
+
+				var monthNames = ['January', 'February', 'March', 
+									'April', 'May', 'June', 
+									'July', 'August', 'September', 
+									'October', 'November', 'December'];
+
+				var date = monthNames[date.getMonth()]+' '+
+				date.getDate()+' '+date.getFullYear();
+				this.options.onClick(this.el, $(this), date);
+			},
+
+			moveSelectedDay: function(days) {
+				if (this.options.selectedDate.getDate() + days > this.options.selectedDate._max()) {
+					this.options.firstDate._addMonths(1);
+				};
+
+				if (this.options.selectedDate.getDate() + days < 1) {
+					this.options.firstDate._addMonths(-1);
+				};
+
+				this.options.selectedDate._addDays(days);
+				this.render();
+			},
+
+			moveSelectedMonth: function(month) {
+				this.options.selectedDate._addMonths(month);
+				this.options.firstDate = this.options.selectedDate;
+				this.render();
+			},
+
+			moveSelectedYear: function(year) {
+				this.options.selectedDate._addYears(year);
+				this.options.firstDate = this.options.selectedDate;
+				this.render();
 			},
 
 			render: function(renderCalback) {
@@ -206,7 +310,7 @@
 				var startOffset = startDate.getDay() - dowOffset;
 				startOffset = startOffset < 1 ? -7 - startOffset : -startOffset;
 
-				startDate._add(startOffset);
+				startDate._addDays(startOffset);
 
 				var showPrev = (prevFirstDate);
 				var showNext = (nextFirstDate);
@@ -268,6 +372,7 @@
 				calendar.append(headerContainer);
 
 				var cellsContainer = $('<div/>').addClass('cells-container').css('height', '176px');
+				options.calendarType = 1;
 
 				for(var row = 0, cellIndex = 0; row < maxRow + 1; row++) {
 					for(var col = 0; col < maxCol; col++, cellIndex++) {
@@ -280,7 +385,7 @@
 							cellDate = null;
 						}
 						else {
-							cellDate._add(col + ((row - 1) * maxCol));
+							cellDate._addDays(col + ((row - 1) * maxCol));
 
 							var cellDateVal = cellDate._val();
 							var cellDateTime = cellDateVal.time;
@@ -347,6 +452,7 @@
 				calendar.append(headerContainer);
 
 				var toggleMonthSelect = function(year) {
+					options.calendarType = 2;
 					$(cellsContainer).empty();
 					$.each(monthNames, function(i, v) {
 						var o = $('<div/>')
@@ -390,6 +496,7 @@
 				};
 
 				var toggleYearSelect = function(year) {
+					options.calendarType = 3;
 					$(cellsContainer).empty();
 					var minYear = year-8;
 					var maxYear = year+7;
@@ -469,8 +576,16 @@
 			return days[this.getMonth()];
 		};
 
-		Date.prototype._add = function(days) {
+		Date.prototype._addDays = function(days) {
 			this.setDate(this.getDate() + days);
+		};
+
+		Date.prototype._addMonths = function(months) {
+			this.setMonth(this.getMonth() + months);
+		};
+
+		Date.prototype._addYears = function(years) {
+			this.setFullYear(this.getFullYear() + years);
 		};
 
 		Date.prototype._first = function() {
