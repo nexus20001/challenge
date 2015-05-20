@@ -49,7 +49,13 @@
 
 			elSpan
 				.bind('click', function(e) {
-					self.toggle();
+					if (self.calendar.is(':hidden')) { 
+						el.focus();
+					}
+					else
+					{
+						self.hide();
+					}
 				});
 
 			if(self.calendar.length) {
