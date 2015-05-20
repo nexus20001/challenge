@@ -42,6 +42,20 @@
 				.bind('click', function(e) { self.show(e); })
 				.bind('focus', function(e) { self.show(e); });
 
+			var elSpan = el.parent().find('.form-control-calendar');
+
+			elSpan
+				.bind('click', function(e) {
+					var calendar = self.calendar;
+					if (calendar.is(':visible')) {
+						self.hide(); 
+						self.render();
+					}
+					else {
+						self.show(e); 
+					}
+				});
+
 			if(self.calendar.length) {
 				self.calendar.hide();
 			}
@@ -49,8 +63,7 @@
 			$(document).bind('mouseup', function(e) {
 				var target = e.target;
 				var calendar = self.calendar;
-
-				if(!el.is(target) && !calendar.is(target) && calendar.has(target).length === 0 && calendar.is(':visible')) {
+				if(!el.is(target) && !elSpan.is(target) && !calendar.is(target) && calendar.has(target).length === 0 && calendar.is(':visible')) {
 					self.hide();
 					self.render();
 				}
@@ -413,7 +426,7 @@
 							});
 
 
-					$(titleCell).empty().html(minYear+' - '+maxYear);
+					$(titleCell).empty().html(minYear+' &mdash; '+maxYear);
 					
 				};
 

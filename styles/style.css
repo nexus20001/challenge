@@ -24,14 +24,14 @@ body {
 
 .form-control-calendar {
 	position: absolute;
-	top: 8px;
-  right: 0;
-	background: url('../images/calendar.png'); 
-	background-repeat:no-repeat;
-  background-size:15px 13px;
+	top: 9.5px;
+  right: 9.5px;
+  border-style: solid;
+  border-width: 2px 1px 1px 1px;
+  border-color: #d5d5d6;
 	display: block;
-	width: 22px;
-  height: 13px;
+	width: 13px;
+  height: 11px;
 }
 
 .left-arrow {
@@ -140,7 +140,7 @@ body {
 }
 
 .datepicker .selected-month {
-	border-radius: 10px;
+	border-radius: 11px;
 	color: #fff;
 	background: #e8736f;
 }
