@@ -49,7 +49,13 @@
 
 			elSpan
 				.bind('click', function(e) {
-					self.toggle();
+					if (self.calendar.is(':hidden')) { 
+						el.focus();
+					}
+					else
+					{
+						self.hide();
+					}
 				});
 
 			if(self.calendar.length) {
@@ -168,15 +174,8 @@
 			},
 
 			moveSelectedDay: function(days) {
-				if (this.options.selectedDate.getDate() + days > this.options.selectedDate._max()) {
-					this.options.firstDate._addMonths(1);
-				};
-
-				if (this.options.selectedDate.getDate() + days < 1) {
-					this.options.firstDate._addMonths(-1);
-				};
-
 				this.options.selectedDate._addDays(days);
+				this.options.firstDate = this.options.selectedDate;
 				this.render();
 			},
 
