@@ -237,7 +237,7 @@
 						{
 							display: 'none',
 							zIndex: 10,
-							width: '220px'
+							width: '264px'
 						});
 
 					$('body').append(calendar);
@@ -319,8 +319,8 @@
 				var prevCell = $('<div/>')
 								.addClass(monyearClass)
 								.css({
-										'width': '30px',
-										'height': '34px'
+										'width': '36px',
+										'height': '40px'
 								})
 								.append(
 									$('<a/>')
@@ -337,8 +337,8 @@
 				var titleCell = $('<div/>')
 								.addClass(monyearClass + 'title')
 								.css({
-										height: '34px',
-										width: '160px'
+										height: '40px',
+										width: '192px'
 								})
 								.click(function(e) {
 										toggleMonthSelect(firstDateYear);
@@ -347,8 +347,8 @@
 				var nextCell = $('<div/>')
 								.addClass(monyearClass)
 								.css({
-										width: '30px',
-										height: '34px'
+										width: '36px',
+										height: '40px'
 								})
 								.append(
 									$('<a/>')
@@ -370,7 +370,7 @@
 
 				calendar.append(headerContainer);
 
-				var cellsContainer = $('<div/>').addClass('cells-container').css('height', '176px');
+				var cellsContainer = $('<div/>').addClass('cells-day-container').css('height', '190px');
 				options.calendarType = 1;
 
 				for(var row = 0, cellIndex = 0; row < maxRow + 1; row++) {
@@ -381,6 +381,8 @@
 
 						if(!row) {
 							cell.html(dowNames[col]);
+
+							cellClass = 'day-coll-'+col;
 							cellDate = null;
 						}
 						else {
@@ -391,10 +393,12 @@
 
 							cell.html(cellDateVal.date);
 
-							cellClass = 'day';
+							cellClass = 'day day-coll-'+col+' day-row';
 
 							if(firstDateMonth != cellDateVal.month) { cellClass += ' outday'; }
-							if(options.selectedDate._time() == cellDateTime) { cellClass = 'selected'; }
+							if(options.selectedDate._time() == cellDateTime) { 
+								cellClass = 'day day-coll-'+col+' day-row selected'; 
+							}
 
 							cell
 								.mousedown(function() { return false; })
@@ -416,12 +420,7 @@
 
 						cell
 							.data('data', { date: cellDate})
-							.addClass(coreClass + cellClass)
-							.css({
-										'height': '23px',
-										'width': '23px',
-										'line-height': '23px'
-									});
+							.addClass(coreClass + cellClass);
 
 						cellsContainer.append(cell);
 					}
@@ -452,22 +451,21 @@
 
 				var toggleMonthSelect = function(year) {
 					options.calendarType = 2;
-					$(cellsContainer).empty();
+					$(cellsContainer)
+						.empty()
+						.addClass('cells-month-container')
+						.removeClass('cells-day-container cells-year-container');
+
 					$.each(monthNames, function(i, v) {
 						var o = $('<div/>')
 								.html(v.substr(0,3))
-								.addClass('core month')
-								.css({
-									'width': '32px', 
-									'height': '22px', 
-									'line-height': '20px',
-									'margin': '9.125px 10.8px 9.125px 10.8px'})
+								.addClass('core month month-coll-'+i%3)
 								.click(function(e) {
 									inputDate(year, i);
 								});
 
 						if(i == options.selectedDate.getMonth() && year == options.selectedDate.getFullYear()) { 
-							o.addClass('selected-month').removeClass('month');
+							o.addClass('selected').removeClass('month');
 						}
 
 						nextCell
@@ -496,7 +494,11 @@
 
 				var toggleYearSelect = function(year) {
 					options.calendarType = 3;
-					$(cellsContainer).empty();
+					$(cellsContainer)
+						.empty()
+						.addClass('cells-year-container')
+						.removeClass('cells-month-container');
+
 					var minYear = year-8;
 					var maxYear = year+7;
 
@@ -504,17 +506,12 @@
 					{
 						var o = $('<div/>')
 							.html(i)
-							.addClass('core year')
-							.css({
-								'width': '36px', 
-								'height': '20px', 
-								'line-height': '20px',
-								'margin': '10.125px 2.125px 10.125px 2.125px'})
+							.addClass('core')
 							.click(function(e) {
 								toggleMonthSelect($(this).text());
 							});
 						if(i == options.selectedDate.getFullYear()) { 
-							o.addClass('selected-year').removeClass('year');
+							o.addClass('selected');
 						}
 						cellsContainer.append(o);
 					}
