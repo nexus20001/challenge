@@ -1,0 +1,265 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+	font-family: 'Lato',serif;
+	background-color: #e6e6e8;
+}
+
+.form-group {
+	display: block;
+	position: relative;
+	width: 264px;
+	height: 36px;
+}
+
+.form-group input {
+	width: 100%;
+	height: 100%;
+	padding: 5px 5px 5px 13px;
+	border: none;
+	font-family: 'Lato',serif;
+	letter-spacing: 0.04em;
+}
+
+.form-group input:focus {
+	outline: none;
+}
+
+.form-control-calendar {
+	position: absolute;
+	top: 10.5px;
+  right: 11.2px;
+  border-style: solid;
+  border-width: 3.8px 1.6px 1.6px 1.6px;
+  border-color: #d5d5d6;
+	display: block;
+	width: 18px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.form-control-calendar:hover {
+	border-color: #5A5B5F;
+}
+
+.left-arrow {
+	display: block;
+	background: url('../img/left-arrow.png'); 
+	background-size:19.2px 18.4px;
+	width: 19.2px;
+  height: 18.4px;
+}
+
+.right-arrow {
+	display: block;
+	background: url('../img/right-arrow.png'); 
+	background-size:19.2px 18.4px;
+	width: 19.2px;
+  height: 18.4px;
+  float: right;
+}
+
+.datepicker {
+	position: absolute;
+	background: #323439;
+}
+
+.datepicker .core {
+	position: relative;
+	float: left;
+	padding: 0;
+	font-size: 10px;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+}
+
+.datepicker .header-container {
+	width: 100%;
+	height: 40px;
+}
+
+.datepicker .header {
+	padding: 12px;
+	background: #5a5b5f;
+}
+
+.datepicker .header:hover {
+	background: #3C3D41;
+}
+
+.datepicker .title {
+	font-size: 15px;
+	line-height: 17px;
+	letter-spacing: -0.02em;
+}
+
+.datepicker .cells-day-container {
+	width: 100%;
+	padding: 14.5px 23px 0px 24.5px;
+}
+
+.datepicker .cells-day-container div {
+	height: 23px;
+	width: 23px;
+	line-height: 23px;
+}
+
+.datepicker .cells-day-container .day {
+	font-size: 12px;
+}
+
+.datepicker .cells-day-container .day:hover {
+	line-height: 19px;
+	border: 2px solid #2D2F33;
+}
+
+@-webkit-keyframes day {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 50%; background: #e8736f;}
+}
+
+.datepicker .cells-day-container .selected {
+	color: #fff;
+	background: #e8736f !important;
+	border-radius: 50%;
+	-webkit-animation-name: day;
+  -webkit-animation-duration: 0.8s;
+}
+
+.datepicker .cells-day-container .outday {
+	color: #666;
+}
+
+.datepicker .cells-month-container {
+	width: 100%;
+	padding: 7.5px 23px 0px 24.5px;
+}
+
+.datepicker .cells-month-container div {
+	width: 33.6px;
+	height: 24.8px; 
+	line-height: 24px;
+	font-size: 13px;
+}
+
+.datepicker .cells-month-container div:hover {
+	border-radius: 16.8px;
+	color: #fff;
+	background: #51535B;
+}
+
+@-webkit-keyframes month {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 16.8px; background: #e8736f;}
+}
+
+.datepicker .cells-month-container .selected {
+	border-radius: 16.8px;
+	color: #fff;
+	background: #e8736f !important;
+	-webkit-animation-name: month;
+  -webkit-animation-duration: 0.8s;
+}
+
+.datepicker .cells-year-container {
+	width: 100%;
+	padding: 16.5px 22px 0px 24.5px;
+}
+
+.datepicker .cells-year-container div {
+	width: 43.2px;
+	height: 24.8px;
+	line-height: 24px;
+	font-size: 13px;
+	margin: 7.5px 5px;
+}
+
+.datepicker .cells-year-container div:hover {
+	border-radius: 12.4px;
+	color: #fff;
+	background: #51535B;
+}
+
+@-webkit-keyframes year {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 12.4px; background: #e8736f;}
+}
+
+.datepicker .cells-year-container .selected {
+	border-radius: 12.4px;
+	color: #fff;
+	background: #e8736f !important;
+	-webkit-animation-name: year;
+  -webkit-animation-duration: 0.8s;
+}
+
+.datepicker .day-coll-1 {
+	margin-left: 7px;
+}
+
+.datepicker .day-coll-2 {
+	margin-left: 11px;
+}
+
+.datepicker .day-coll-3 {
+	margin-left: 8px;
+}
+
+.datepicker .day-coll-4 {
+	margin-left: 10px;
+}
+
+.datepicker .day-coll-5 {
+	margin-left: 10px;
+}
+
+.datepicker .day-coll-6 {
+	margin-left: 9px;
+}
+
+.datepicker .day-row {
+	margin-top: 1px;
+}
+
+.datepicker .month-coll-0 {
+	margin-top: 16px;
+  margin-left: 11px;
+}
+
+.datepicker .month-coll-1 {
+	margin-top: 16px;
+  margin-left: 47px;
+}
+
+.datepicker .month-coll-2 {
+	margin-top: 16px;
+  margin-left: 47px;
+}
+
+.datepicker .footer-container {
+	margin-bottom: 20px;
+}
+.datepicker .today-button {
+	display: block;
+  margin: 0 auto;
+	font-size: 12px;
+	background: #282a2d;
+  color: #ffffff;
+  border-radius: 24px;
+  border: 0 none;
+  padding: 6px 38px;
+  cursor: pointer;
+}
+
+.datepicker .today-button:hover {
+	background: #51535B;
+}
+
+.datepicker .today-button:focus {
+	outline: 0 none;
+}

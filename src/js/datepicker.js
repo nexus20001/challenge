@@ -39,23 +39,18 @@
 			options.firstDate = (new Date(options.selectedDate))._first();
 
 			el
-				.bind('click', function(e) { self.show(e); })
-				.bind('focus', function(e) { self.show(e); })
 				.bind('keydown', function(e) { 
 					self.keydown(e);
+				})
+				.bind("keydown keypress mousemove", function() {
+				  options.caretPosition = $(this).caret();
 				});
 
 			var elSpan = el.parent().find('.form-control-calendar');
 
 			elSpan
 				.bind('click', function(e) {
-					if (self.calendar.is(':hidden')) { 
-						el.focus();
-					}
-					else
-					{
-						self.hide();
-					}
+						self.toggle();
 				});
 
 			if(self.calendar.length) {
@@ -77,65 +72,112 @@
 		datepicker.prototype =
 		{
 			keydown: function(e) {
-				if (this.options.calendarType == 1) {
-					switch (e.which){
-					case 27: // escape
-						this.toggle();
-						break;
-					case 37: // left
-						if (e.ctrlKey){
-							this.moveSelectedYear(-1);
-						}
-						else if (e.shiftKey){
-							this.moveSelectedMonth(-1);
-						}
-						else {
+				if (this.calendar.is(':visible')) {
+
+					if (this.options.calendarType == 1) {
+						switch (e.which){
+						case 27: // escape
+							this.toggle();
+							break;
+						case 37: // left
 							this.moveSelectedDay(-1);
-						}
-						break;
-					case 39: // right
-						if (e.ctrlKey){
-							this.moveSelectedYear(1);
-						}
-						else if (e.shiftKey){
-							this.moveSelectedMonth(1);
-						}
-						else {
+							break;
+						case 39: // right
 							this.moveSelectedDay(1);
-						}
-						break;
-					case 38: // up
-						if (e.ctrlKey){
-							this.moveSelectedYear(-1);
-						}
-						else if (e.shiftKey){
-							this.moveSelectedMonth(-1);
-						}
-						else {
+							break;
+						case 38: // up
 							this.moveSelectedDay(-7);
-						}
-						break;
-					case 40: // down
-						if (e.ctrlKey){
-							this.moveSelectedYear(1);
-						}
-						else if (e.shiftKey){
-							this.moveSelectedMonth(1);
-						}
-						else {
+							break;
+						case 40: // down
 							this.moveSelectedDay(7);
+							break;
+						case 13: // enter
+							this.calendar.find('.selected').click();
+							break;
 						}
-						break;
-					case 13: // enter
-						this.calendar.find('.selected').click();
-						break;
 					}
+
+					if (this.options.calendarType == 2) {
+						switch (e.which){
+						case 27: // escape
+							this.toggle();
+							break;
+						case 37: // left
+							this.moveSelectedMonth(-1);
+							break;
+						case 39: // right
+							this.moveSelectedMonth(1);
+							break;
+						case 38: // up
+							this.moveSelectedMonth(-3);
+							break;
+						case 40: // down
+							this.moveSelectedMonth(3);
+							break;
+						case 13: // enter
+							break;
+						}
+					}
+
+					if (this.options.calendarType == 3) {
+						switch (e.which){
+						case 27: // escape
+							this.toggle();
+							break;
+						case 37: // left
+							this.moveSelectedYear(-1);
+							break;
+						case 39: // right
+							this.moveSelectedYear(1);
+							break;
+						case 38: // up
+							this.moveSelectedYear(-4);
+							break;
+						case 40: // down
+							this.moveSelectedYear(4);
+							break;
+						case 13: // enter
+							break;
+						}
+					}
+
+					this.fillDate(this.options.selectedDate);
+					e.preventDefault();
 				};
 
-				this.fillDate(this.options.selectedDate);
-
 				if (this.calendar.is(':hidden')) { 
-					this.calendar.find('.selected').click() 
+					switch (e.which){
+						case 38: // up
+						case 40: // down
+							var dir = e.which === 38 ? 1 : -1;
+
+							var pos = this.options.caretPosition;
+							var str = this.el.val();
+
+				      var startSeparatorIndex = str.lastIndexOf(" ", pos);
+				      var startWordIndex = (startSeparatorIndex !== -1) ? startSeparatorIndex + 1 : 0;
+
+				      var endSeparatorIndex = str.indexOf(" ", pos);
+				      var endWordIndex = (endSeparatorIndex !== -1) ? endSeparatorIndex : str.length
+
+				      var word = str.substr(startWordIndex, endWordIndex-startWordIndex);
+
+				      if (parseInt(word) > 0 && parseInt(word) < 32) {
+				      	this.moveSelectedDay(dir);
+				      }
+				      else if(this.options.monthNames.indexOf(word) !== -1) {
+				      	this.moveSelectedMonth(dir);
+				      }
+				      else if(parseInt(word) > 1000 && parseInt(word) < 3000) {
+				      	this.moveSelectedYear(dir);
+				      }
+
+							e.preventDefault();
+							this.fillDate(this.options.selectedDate);
+				      this.el.caret(pos);
+							break;
+					}
+					
 				};
 			},
 
@@ -163,13 +205,9 @@
 
 			fillDate: function(date) {
 
-				var monthNames = ['January', 'February', 'March', 
-									'April', 'May', 'June', 
-									'July', 'August', 'September', 
-									'October', 'November', 'December'];
-
-				var date = monthNames[date.getMonth()]+' '+
-				date.getDate()+' '+date.getFullYear();
+				var date = date.getFullYear()+' '+
+									 this.options.monthNames[date.getMonth()]+' '+
+									 date.getDate();
 				this.options.onClick(this.el, $(this), date);
 			},
 
@@ -182,16 +220,16 @@
 			moveSelectedMonth: function(month) {
 				this.options.selectedDate._addMonths(month);
 				this.options.firstDate = this.options.selectedDate;
-				this.render();
+				this.render(2);
 			},
 
 			moveSelectedYear: function(year) {
 				this.options.selectedDate._addYears(year);
 				this.options.firstDate = this.options.selectedDate;
-				this.render();
+				this.render(3);
 			},
 
-			render: function(renderCalback) {
+			render: function(type) {
 				var self = this;
 				var el = self.el;
 				var options = self.options;
@@ -215,7 +253,7 @@
 				};
 
 				var dowNames = [ 'SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA' ];
-				var monthNames = ['January', 'February', 'March', 
+				options.monthNames = ['January', 'February', 'March', 
 													'April', 'May', 'June', 
 													'July', 'August', 'September', 
 													'October', 'November', 'December'];
@@ -237,7 +275,7 @@
 						{
 							display: 'none',
 							zIndex: 10,
-							width: '220px'
+							width: '264px'
 						});
 
 					$('body').append(calendar);
@@ -319,8 +357,8 @@
 				var prevCell = $('<div/>')
 								.addClass(monyearClass)
 								.css({
-										'width': '30px',
-										'height': '34px'
+										'width': '36px',
+										'height': '40px'
 								})
 								.append(
 									$('<a/>')
@@ -337,8 +375,8 @@
 				var titleCell = $('<div/>')
 								.addClass(monyearClass + 'title')
 								.css({
-										height: '34px',
-										width: '160px'
+										height: '40px',
+										width: '192px'
 								})
 								.click(function(e) {
 										toggleMonthSelect(firstDateYear);
@@ -347,8 +385,8 @@
 				var nextCell = $('<div/>')
 								.addClass(monyearClass)
 								.css({
-										width: '30px',
-										height: '34px'
+										width: '36px',
+										height: '40px'
 								})
 								.append(
 									$('<a/>')
@@ -370,7 +408,7 @@
 
 				calendar.append(headerContainer);
 
-				var cellsContainer = $('<div/>').addClass('cells-container').css('height', '176px');
+				var cellsContainer = $('<div/>').addClass('cells-day-container').css('height', '190px');
 				options.calendarType = 1;
 
 				for(var row = 0, cellIndex = 0; row < maxRow + 1; row++) {
@@ -381,6 +419,8 @@
 
 						if(!row) {
 							cell.html(dowNames[col]);
+
+							cellClass = 'day-coll-'+col;
 							cellDate = null;
 						}
 						else {
@@ -391,10 +431,12 @@
 
 							cell.html(cellDateVal.date);
 
-							cellClass = 'day';
+							cellClass = 'day day-coll-'+col+' day-row';
 
 							if(firstDateMonth != cellDateVal.month) { cellClass += ' outday'; }
-							if(options.selectedDate._time() == cellDateTime) { cellClass = 'selected'; }
+							if(options.selectedDate._time() == cellDateTime) { 
+								cellClass = 'day day-coll-'+col+' day-row selected'; 
+							}
 
 							cell
 								.mousedown(function() { return false; })
@@ -407,8 +449,9 @@
 										self.hide();
 									});
 
-									var date = monthNames[clickedData.date.getMonth()]+' '+
-									clickedData.date.getDate()+' '+clickedData.date.getFullYear();
+									var date = clickedData.date.getFullYear()+' '+
+														 options.monthNames[clickedData.date.getMonth()]+' '+
+														 clickedData.date.getDate();
 									options.onClick(el, $(this), date);
 								});
 							
@@ -416,12 +459,7 @@
 
 						cell
 							.data('data', { date: cellDate})
-							.addClass(coreClass + cellClass)
-							.css({
-										'height': '23px',
-										'width': '23px',
-										'line-height': '23px'
-									});
+							.addClass(coreClass + cellClass);
 
 						cellsContainer.append(cell);
 					}
@@ -435,8 +473,9 @@
 						.click(function(e) {
 							options.selectedDate = options.firstDate = new Date();
 
-							var date = monthNames[new Date().getMonth()]+' '+
-								new Date().getDate()+' '+new Date().getFullYear();
+							var date = new Date().getFullYear()+' '+
+												 options.monthNames[new Date().getMonth()]+' '+
+												 new Date().getDate();
 
 							options.onClick(el, $(this), date, 1);
 
@@ -451,23 +490,23 @@
 				calendar.append(headerContainer);
 
 				var toggleMonthSelect = function(year) {
+					year = year || options.selectedDate.getFullYear();
 					options.calendarType = 2;
-					$(cellsContainer).empty();
-					$.each(monthNames, function(i, v) {
+					$(cellsContainer)
+						.empty()
+						.addClass('cells-month-container')
+						.removeClass('cells-day-container cells-year-container');
+
+					$.each(options.monthNames, function(i, v) {
 						var o = $('<div/>')
 								.html(v.substr(0,3))
-								.addClass('core month')
-								.css({
-									'width': '32px', 
-									'height': '22px', 
-									'line-height': '20px',
-									'margin': '9.125px 10.8px 9.125px 10.8px'})
+								.addClass('core month month-coll-'+i%3)
 								.click(function(e) {
 									inputDate(year, i);
 								});
 
 						if(i == options.selectedDate.getMonth() && year == options.selectedDate.getFullYear()) { 
-							o.addClass('selected-month').removeClass('month');
+							o.addClass('selected').removeClass('month');
 						}
 
 						nextCell
@@ -495,26 +534,27 @@
 				};
 
 				var toggleYearSelect = function(year) {
+					year = year || options.selectedDate.getFullYear();
 					options.calendarType = 3;
-					$(cellsContainer).empty();
-					var minYear = year-8;
-					var maxYear = year+7;
+					$(cellsContainer)
+						.empty()
+						.addClass('cells-year-container')
+						.removeClass('cells-month-container');
 
-					for(var i=minYear; i<=maxYear; i++)
+					var a = parseInt(year/16);
+					var minYear = a*16;
+					var maxYear = a*16+15;
+
+					for(var i = minYear; i <= maxYear; i++)
 					{
 						var o = $('<div/>')
 							.html(i)
-							.addClass('core year')
-							.css({
-								'width': '36px', 
-								'height': '20px', 
-								'line-height': '20px',
-								'margin': '10.125px 2.125px 10.125px 2.125px'})
+							.addClass('core')
 							.click(function(e) {
 								toggleMonthSelect($(this).text());
 							});
 						if(i == options.selectedDate.getFullYear()) { 
-							o.addClass('selected-year').removeClass('year');
+							o.addClass('selected');
 						}
 						cellsContainer.append(o);
 					}
@@ -542,12 +582,17 @@
 				};
 
 				var yearText = $('<span/>')
-									.html(monthNames[firstDateMonth]+' '+firstDateYear);
+									.html(options.monthNames[firstDateMonth]+' '+firstDateYear);
 
 				titleCell.append(yearText);
 
-				renderCalback = renderCalback || (function() {});
-				renderCalback();
+				if(type == 2) {
+					toggleMonthSelect();
+				}
+				else if(type == 3) {
+					toggleYearSelect();
+				}
+
 			}
 		};
 
