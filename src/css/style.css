@@ -113,7 +113,7 @@ body {
 	font-size: 12px;
 }
 
-.datepicker .cells-day-container .day:hover {
+.datepicker .cells-day-container :not(.selected).day:hover {
 	line-height: 19px;
 	border: 2px solid #2D2F33;
 }
