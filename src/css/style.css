@@ -114,15 +114,21 @@ body {
 }
 
 .datepicker .cells-day-container .day:hover {
-	border-radius: 50%;
-	color: #fff;
-	background: #51535B;
+	line-height: 19px;
+	border: 2px solid #2D2F33;
+}
+
+@-webkit-keyframes day {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 50%; background: #e8736f;}
 }
 
 .datepicker .cells-day-container .selected {
-	border-radius: 50%;
 	color: #fff;
 	background: #e8736f !important;
+	border-radius: 50%;
+	-webkit-animation-name: day;
+  -webkit-animation-duration: 0.8s;
 }
 
 .datepicker .cells-day-container .outday {
@@ -147,10 +153,17 @@ body {
 	background: #51535B;
 }
 
+@-webkit-keyframes month {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 16.8px; background: #e8736f;}
+}
+
 .datepicker .cells-month-container .selected {
 	border-radius: 16.8px;
 	color: #fff;
 	background: #e8736f !important;
+	-webkit-animation-name: month;
+  -webkit-animation-duration: 0.8s;
 }
 
 .datepicker .cells-year-container {
@@ -172,10 +185,17 @@ body {
 	background: #51535B;
 }
 
+@-webkit-keyframes year {
+  from {border-radius: 0px; background: #323439;}
+  to {border-radius: 12.4px; background: #e8736f;}
+}
+
 .datepicker .cells-year-container .selected {
 	border-radius: 12.4px;
 	color: #fff;
 	background: #e8736f !important;
+	-webkit-animation-name: year;
+  -webkit-animation-duration: 0.8s;
 }
 
 .datepicker .day-coll-1 {

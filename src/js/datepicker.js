@@ -72,64 +72,77 @@
 		datepicker.prototype =
 		{
 			keydown: function(e) {
-				if (this.options.calendarType == 1) {
-					if (this.calendar.is(':visible')) {
+				if (this.calendar.is(':visible')) {
+
+					if (this.options.calendarType == 1) {
 						switch (e.which){
 						case 27: // escape
 							this.toggle();
 							break;
 						case 37: // left
-							if (e.ctrlKey){
-								this.moveSelectedYear(-1);
-							}
-							else if (e.shiftKey){
-								this.moveSelectedMonth(-1);
-							}
-							else {
-								this.moveSelectedDay(-1);
-							}
+							this.moveSelectedDay(-1);
 							break;
 						case 39: // right
-							if (e.ctrlKey){
-								this.moveSelectedYear(1);
-							}
-							else if (e.shiftKey){
-								this.moveSelectedMonth(1);
-							}
-							else {
-								this.moveSelectedDay(1);
-							}
+							this.moveSelectedDay(1);
 							break;
 						case 38: // up
-							if (e.ctrlKey){
-								this.moveSelectedYear(-1);
-							}
-							else if (e.shiftKey){
-								this.moveSelectedMonth(-1);
-							}
-							else {
-								this.moveSelectedDay(-7);
-							}
+							this.moveSelectedDay(-7);
 							break;
 						case 40: // down
-							if (e.ctrlKey){
-								this.moveSelectedYear(1);
-							}
-							else if (e.shiftKey){
-								this.moveSelectedMonth(1);
-							}
-							else {
-								this.moveSelectedDay(7);
-							}
+							this.moveSelectedDay(7);
 							break;
 						case 13: // enter
 							this.calendar.find('.selected').click();
 							break;
 						}
-
-						this.fillDate(this.options.selectedDate);
-						e.preventDefault();
 					}
+
+					if (this.options.calendarType == 2) {
+						switch (e.which){
+						case 27: // escape
+							this.toggle();
+							break;
+						case 37: // left
+							this.moveSelectedMonth(-1);
+							break;
+						case 39: // right
+							this.moveSelectedMonth(1);
+							break;
+						case 38: // up
+							this.moveSelectedMonth(-3);
+							break;
+						case 40: // down
+							this.moveSelectedMonth(3);
+							break;
+						case 13: // enter
+							break;
+						}
+					}
+
+					if (this.options.calendarType == 3) {
+						switch (e.which){
+						case 27: // escape
+							this.toggle();
+							break;
+						case 37: // left
+							this.moveSelectedYear(-1);
+							break;
+						case 39: // right
+							this.moveSelectedYear(1);
+							break;
+						case 38: // up
+							this.moveSelectedYear(-4);
+							break;
+						case 40: // down
+							this.moveSelectedYear(4);
+							break;
+						case 13: // enter
+							break;
+						}
+					}
+
+					this.fillDate(this.options.selectedDate);
+					e.preventDefault();
 				};
 
 				if (this.calendar.is(':hidden')) { 
@@ -207,16 +220,16 @@
 			moveSelectedMonth: function(month) {
 				this.options.selectedDate._addMonths(month);
 				this.options.firstDate = this.options.selectedDate;
-				this.render();
+				this.render(2);
 			},
 
 			moveSelectedYear: function(year) {
 				this.options.selectedDate._addYears(year);
 				this.options.firstDate = this.options.selectedDate;
-				this.render();
+				this.render(3);
 			},
 
-			render: function(renderCalback) {
+			render: function(type) {
 				var self = this;
 				var el = self.el;
 				var options = self.options;
@@ -477,6 +490,7 @@
 				calendar.append(headerContainer);
 
 				var toggleMonthSelect = function(year) {
+					year = year || options.selectedDate.getFullYear();
 					options.calendarType = 2;
 					$(cellsContainer)
 						.empty()
@@ -520,16 +534,18 @@
 				};
 
 				var toggleYearSelect = function(year) {
+					year = year || options.selectedDate.getFullYear();
 					options.calendarType = 3;
 					$(cellsContainer)
 						.empty()
 						.addClass('cells-year-container')
 						.removeClass('cells-month-container');
 
-					var minYear = year-8;
-					var maxYear = year+7;
+					var a = parseInt(year/16);
+					var minYear = a*16;
+					var maxYear = a*16+15;
 
-					for(var i=minYear; i<=maxYear; i++)
+					for(var i = minYear; i <= maxYear; i++)
 					{
 						var o = $('<div/>')
 							.html(i)
@@ -570,8 +586,13 @@
 
 				titleCell.append(yearText);
 
-				renderCalback = renderCalback || (function() {});
-				renderCalback();
+				if(type == 2) {
+					toggleMonthSelect();
+				}
+				else if(type == 3) {
+					toggleYearSelect();
+				}
+
 			}
 		};
 
