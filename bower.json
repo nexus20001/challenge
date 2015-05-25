@@ -1,0 +1,16 @@
+{
+  "name": "challenge",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nexus20001/challenge",
+  "authors": [
+    "nexus20001 <nexus20001@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

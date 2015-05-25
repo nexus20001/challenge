@@ -39,11 +39,16 @@ body {
 	display: block;
 	width: 18px;
   height: 15px;
+  cursor: pointer;
+}
+
+.form-control-calendar:hover {
+	border-color: #5A5B5F;
 }
 
 .left-arrow {
 	display: block;
-	background: url('../images/left-arrow.png'); 
+	background: url('../img/left-arrow.png'); 
 	background-size:19.2px 18.4px;
 	width: 19.2px;
   height: 18.4px;
@@ -51,7 +56,7 @@ body {
 
 .right-arrow {
 	display: block;
-	background: url('../images/right-arrow.png'); 
+	background: url('../img/right-arrow.png'); 
 	background-size:19.2px 18.4px;
 	width: 19.2px;
   height: 18.4px;
