@@ -85,19 +85,23 @@
 						case 39: // right
 							this.moveSelectedDay(1);
 							break;
-						case 38: // up
-							this.moveSelectedDay(-7);
-							break;
 						case 40: // down
 							this.moveSelectedDay(7);
 							break;
 						case 13: // enter
 							this.calendar.find('.selected').click();
 							break;
+						case 38: // up
+							if (e.ctrlKey) {
+								this.render(2);
+							}
+							else {
+								this.moveSelectedDay(-7);
+							}
+							break;
 						}
 					}
-
-					if (this.options.calendarType == 2) {
+					else if (this.options.calendarType == 2) {
 						switch (e.which){
 						case 27: // escape
 							this.toggle();
@@ -109,17 +113,27 @@
 							this.moveSelectedMonth(1);
 							break;
 						case 38: // up
-							this.moveSelectedMonth(-3);
+							if (e.ctrlKey) {
+								this.render(3);
+							}
+							else {
+								this.moveSelectedMonth(-3);
+							}
 							break;
 						case 40: // down
-							this.moveSelectedMonth(3);
+							if (e.ctrlKey) {
+								this.render();
+							}
+							else {
+								this.moveSelectedMonth(3);
+							}
 							break;
 						case 13: // enter
+							this.calendar.find('.selected').click();
 							break;
 						}
 					}
-
-					if (this.options.calendarType == 3) {
+					else if (this.options.calendarType == 3) {
 						switch (e.which){
 						case 27: // escape
 							this.toggle();
@@ -134,9 +148,15 @@
 							this.moveSelectedYear(-4);
 							break;
 						case 40: // down
-							this.moveSelectedYear(4);
+							if (e.ctrlKey) {
+								this.render(2);
+							}
+							else {
+								this.moveSelectedYear(4);
+							}
 							break;
 						case 13: // enter
+							this.calendar.find('.selected').click();
 							break;
 						}
 					}
@@ -445,9 +465,8 @@
 
 									options.selectedDate = options.firstDate = clickedData.date;
 
-									self.render(function() {
-										self.hide();
-									});
+									self.render();
+									self.hide();
 
 									var date = clickedData.date.getFullYear()+' '+
 														 options.monthNames[clickedData.date.getMonth()]+' '+
@@ -479,9 +498,8 @@
 
 							options.onClick(el, $(this), date, 1);
 
-							self.render(function() {
-								self.hide();
-							});
+							self.render();
+							self.hide();
 
 						});
 
