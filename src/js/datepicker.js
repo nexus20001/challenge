@@ -50,6 +50,7 @@
 
 			elSpan
 				.bind('click', function(e) {
+						el.focus();
 						self.toggle();
 				});
 
